@@ -69,6 +69,14 @@
       "amount": "1500",
       "date": "2024-08-14",
       "userId": "_yy1ndkifv"
+    },
+    {
+      "id": "bc2c",
+      "category": "Transport",
+      "description": "town ",
+      "amount": "500",
+      "date": "2024-08-10",
+      "userId": "_yy1ndkifv"
     }
   ],
   "budget": [

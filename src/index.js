@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(error => console.error(`Fetching Error: ${error}`));
     }
-    
+
     function totalExpenditure(category = null) {
         return new Promise((resolve, reject) => {
             const currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -92,33 +92,33 @@ document.addEventListener('DOMContentLoaded', () => {
     // Calculate and display the remaining budget
     function calculateRemainingBudget(totalExpenses) {
         const currentUser = JSON.parse(localStorage.getItem('currentUser')); // Get the logged-in user
-    
+
         // Function to update remaining budget
         const updateRemainingBudget = () => {
             const remainingBudget = monthlyBudget - totalExpenses;
             remainingBudgetDisplay.textContent = `Remaining Budget: $${remainingBudget.toFixed(2)}`;
         };
-    
+
         if (totalExpenses >= monthlyBudget) {
             alert("Oops! Unfortunately, it looks like you have exhausted your monthly budget.");
         }
-    
+
         // Fetch the budget using the current user's budget ID
         fetch(`http://localhost:3000/budget/${currentUser.budget}`)
             .then(res => res.json())
             .then(data => {
                 monthlyBudget = parseFloat(data.monthlyBudget); // Initialize monthlyBudget from the server data
                 myMonthlyBudget.textContent = data.monthlyBudget;
-    
+
                 // Initial update of the remaining budget
                 updateRemainingBudget();
-    
+
                 myMonthlyBudget.addEventListener('dblclick', () => {
                     const editBudget = document.createElement('input');
                     editBudget.type = 'number';
                     editBudget.value = myMonthlyBudget.textContent;
                     myMonthlyBudget.replaceWith(editBudget);
-    
+
                     editBudget.addEventListener('keypress', (e) => {
                         if (e.key === 'Enter') {
                             const newBudget = editBudget.value.trim();
@@ -146,9 +146,9 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(error => console.error(`Error fetching budget: ${error}`));
     }
-    
-    
-    
+
+
+
 
     // Sort expenses based on selected option and display them
     function sortExpenses(sortOption) {
@@ -185,62 +185,62 @@ document.addEventListener('DOMContentLoaded', () => {
         updateChart(); // Update the chart after displaying expenses
     }
 
-  // Check if the user is logged in
-function isUserLoggedIn() {
-    return !!localStorage.getItem('currentUser');
-}
-
-// Handle form submission to add an expense
-function handleSubmit(event) {
-    event.preventDefault();
-
-    if (!isUserLoggedIn()) {
-        alert('User is not logged in. Please log in to add expenses.');
-        return;
+    // Check if the user is logged in
+    function isUserLoggedIn() {
+        return !!localStorage.getItem('currentUser');
     }
 
-    const categorySelect = document.getElementById('formSelect');
-    const category = categorySelect.options[categorySelect.selectedIndex].text;
-    const description = document.getElementById('description').value;
-    const amount = document.getElementById('amount').value;
-    const date = document.getElementById('date').value;
+    // Handle form submission to add an expense
+    function handleSubmit(event) {
+        event.preventDefault();
 
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    const userId = currentUser.id;
+        if (!isUserLoggedIn()) {
+            alert('User is not logged in. Please log in to add expenses.');
+            return;
+        }
 
-    const newExpense = {
-        category,
-        description,
-        amount,
-        date,
-        userId,
-    };
+        const categorySelect = document.getElementById('formSelect');
+        const category = categorySelect.options[categorySelect.selectedIndex].text;
+        const description = document.getElementById('description').value;
+        const amount = document.getElementById('amount').value;
+        const date = document.getElementById('date').value;
 
-    postExpense(newExpense);
-    addExpenseForm.reset();
-}
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        const userId = currentUser.id;
 
-// Post new expense to server
-function postExpense(newExpense) {
-    fetch('http://localhost:3000/expenses', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify(newExpense)
-    })
-    .then(res => res.json())
-    .then(expense => {
-        expenses.push(expense);
-        displayExpenses();
-        updateSummary();
-    })
-    .catch(error => console.error(`Posting Error: ${error}`));
-}
+        const newExpense = {
+            category,
+            description,
+            amount,
+            date,
+            userId,
+        };
+
+        postExpense(newExpense);
+        addExpenseForm.reset();
+    }
+
+    // Post new expense to server
+    function postExpense(newExpense) {
+        fetch('http://localhost:3000/expenses', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(newExpense)
+        })
+            .then(res => res.json())
+            .then(expense => {
+                expenses.push(expense);
+                displayExpenses();
+                updateSummary();
+            })
+            .catch(error => console.error(`Posting Error: ${error}`));
+    }
 
 
-    
+
     // Create a table row for an expense
     function createExpenseRow(expense) {
         const row = document.createElement('tr');
@@ -255,54 +255,68 @@ function postExpense(newExpense) {
 
         const categoryCell = document.createElement('td');
         categoryCell.textContent = expense.category;
-        categoryCell.addEventListener('dblclick', () => editCell(categoryCell, 'category', expense));
+        categoryCell.addEventListener('dblclick', () => {
+            editCell(categoryCell, 'category', expense);
+        });
         row.appendChild(categoryCell);
 
         const descriptionCell = document.createElement('td');
         descriptionCell.textContent = expense.description;
-        descriptionCell.addEventListener('dblclick', () => editCell(descriptionCell, 'description', expense));
+        descriptionCell.addEventListener('dblclick', () => {
+            console.log('Double-clicked on description cell');
+            editCell(descriptionCell, 'description', expense);
+        });
         row.appendChild(descriptionCell);
 
         const amountCell = document.createElement('td');
         amountCell.textContent = expense.amount;
-        amountCell.addEventListener('dblclick', () => editCell(amountCell, 'amount', expense));
+        amountCell.addEventListener('dblclick', () => {
+            console.log('Double-clicked on amount cell');
+            editCell(amountCell, 'amount', expense);
+        });
         row.appendChild(amountCell);
 
         const dateCell = document.createElement('td');
         dateCell.textContent = expense.date;
-        dateCell.addEventListener('dblclick', () => editCell(dateCell, 'date', expense));
+        dateCell.addEventListener('dblclick', () => {
+            console.log('Double-clicked on date cell');
+            editCell(dateCell, 'date', expense);
+        });
         row.appendChild(dateCell);
 
         return row;
     }
 
+
     // Edit a table cell
-    function editCell(cell, key, expense) {
-        const oldValue = cell.textContent;
+    function editCell(cell) {
+        const oldValue = cell.textContent.trim();
         const input = document.createElement('input');
-        input.type = key === 'amount' ? 'number' : key === 'date' ? 'date' : 'text';
+        input.type = 'text';
         input.value = oldValue;
 
+        // Handle Enter key to save changes
         input.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                const newValue = input.value.trim();
-                if (newValue !== oldValue) {
-                    updateExpense(expense.id, { [key]: newValue });
-                } else {
-                    cell.textContent = newValue;
-                    input.replaceWith(cell);
-                }
+                cell.textContent = input.value;
             }
         });
 
+        // Handle blur event to save changes when the input field loses focus
+        input.addEventListener('blur', () => {
+            cell.textContent = input.value;
+        });
+
+        // Replace cell content with input field
         cell.textContent = '';
         cell.appendChild(input);
         input.focus();
     }
 
+
     // Update an expense on the server once editing takes place
     function updateExpense(expenseId, updates) {
-        fetch(`http://localhost:3000/expenses/${expenseId}`, {
+        return fetch(`http://localhost:3000/expenses/${expenseId}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -310,13 +324,18 @@ function postExpense(newExpense) {
             },
             body: JSON.stringify(updates)
         })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Failed to update expense');
+                }
+                return res.json();
+            })
             .then(updatedExpense => {
                 const index = expenses.findIndex(expense => expense.id === updatedExpense.id);
                 if (index !== -1) {
                     expenses[index] = updatedExpense;
-                    displayExpenses();
-                    updateSummary(); // Update summary after updating expense
+                    displayExpenses(); // Function to re-render the table
+                    updateSummary(); // Function to update any summaries or totals
                 }
             })
             .catch(error => console.error(`Error updating expense: ${error}`));
@@ -335,13 +354,13 @@ function postExpense(newExpense) {
         deleteButton.disabled = selectedExpenses.length === 0; // Enable or disable button based on selection
         console.log(`Delete button status: ${deleteButton.disabled}`);
     }
-    
+
     function deleteSelectedExpenses() {
         if (selectedExpenses.length === 0) {
             alert('No expenses selected for deletion.');
             return;
         }
-        
+
         console.log(`Deleting expenses: ${selectedExpenses}`);
         selectedExpenses.forEach(expenseId => {
             deleteExpense(expenseId);
@@ -349,7 +368,7 @@ function postExpense(newExpense) {
         selectedExpenses = [];
         deleteButton.disabled = true; // Disable button after deletion
     }
-    
+
     function deleteExpense(expenseId) {
         console.log(`Deleting expense with ID: ${expenseId}`);
         fetch(`http://localhost:3000/expenses/${expenseId}`, {
