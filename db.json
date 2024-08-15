@@ -35,6 +35,14 @@
       "password": "789",
       "expenses": [],
       "budget": "_qrtr5s4yi"
+    },
+    {
+      "id": "_05kq8dl13",
+      "name": "Sammy",
+      "email": "Sam@gmail.com",
+      "password": "741",
+      "expenses": [],
+      "budget": "_q2vybbx8l"
     }
   ],
   "expenses": [
@@ -77,6 +85,14 @@
       "amount": "500",
       "date": "2024-08-10",
       "userId": "_yy1ndkifv"
+    },
+    {
+      "id": "d10d",
+      "category": "Entertainment",
+      "description": "game pass ",
+      "amount": "1200",
+      "date": "2024-08-01",
+      "userId": "_05kq8dl13"
     }
   ],
   "budget": [
@@ -104,6 +120,11 @@
       "id": "_qrtr5s4yi",
       "monthlyBudget": 20000,
       "userId": "_tyoaoh261"
+    },
+    {
+      "id": "_q2vybbx8l",
+      "monthlyBudget": 20000,
+      "userId": "_05kq8dl13"
     }
   ]
 }
